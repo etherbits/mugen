@@ -1,28 +1,31 @@
 import { ThemeToggle } from "@/components/theme-toggle";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { createFileRoute } from "@tanstack/react-router";
+import { Temporal } from "@js-temporal/polyfill";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
 });
 
+const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
 function Index() {
+  const date = Temporal.Now.plainDateISO();
+  const calDay = date.day;
+
   return (
     <div>
+      {calDay}
       <div className="flex justify-between">
         <h1 className="text-2xl">Mugen</h1>
         <div className="flex gap-4">
@@ -33,27 +36,28 @@ function Index() {
           <ThemeToggle />
         </div>
       </div>
-      <Card className="flex gap-6 items-center w-fit px-6 py-4">
-        <Checkbox />
-        <AlertDialog>
-          <AlertDialogTrigger>
-            <Button>Click me</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>Continue</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </Card>
+      <main>
+        <section className="grid grid-cols-8 text-xl">
+          <div />
+          {Array.from({ length: 7 }).map((_, i) => (
+            <span key={i} className="w-full text-center">
+              {date.day - i}
+              {weekdays[date.subtract({ days: i }).dayOfWeek]}
+            </span>
+          ))}
+          {Array.from({ length: 7 }).map((_, i) => (
+            <>
+              <h4>commit</h4>
+              {Array.from({ length: 7 }).map((_, i) => (
+                <Checkbox
+                  key={i}
+                  className="h-12 w-full bg-zinc-900 border-none rounded-none"
+                />
+              ))}
+            </>
+          ))}
+        </section>
+      </main>
     </div>
   );
 }
