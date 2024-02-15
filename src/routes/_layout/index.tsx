@@ -1,17 +1,8 @@
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { createFileRoute } from "@tanstack/react-router";
-import { Temporal } from "@js-temporal/polyfill";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Temporal } from "@js-temporal/polyfill";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -48,7 +39,7 @@ function Index() {
               </span>
             );
           })}
-          {Array.from({ length: 7 }).map((_, i) => (
+          {Array.from({ length: 7 }).map(() => (
             <>
               <h4>commit</h4>
               {Array.from({ length: 14 }).map((_, i) => (
