@@ -17,8 +17,6 @@ export const Route = createFileRoute("/_layout/")({
   component: Index,
 });
 
-const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
 function Index() {
   const date = Temporal.Now.plainDateISO();
   const calDay = date.day;
