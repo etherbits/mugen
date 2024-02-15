@@ -37,21 +37,27 @@ function Index() {
         </div>
       </div>
       <main>
-        <section className="grid grid-cols-8 text-xl">
+        <section className="grid [grid-template-columns:repeat(15,_1fr)] text-lg text-zinc-400 max-w-[1440px] mx-auto items-center">
           <div />
-          {Array.from({ length: 7 }).map((_, i) => (
-            <span key={i} className="w-full text-center">
-              {date.day - i}
-              {weekdays[date.subtract({ days: i }).dayOfWeek]}
-            </span>
-          ))}
+          {Array.from({ length: 14 }).map((_, i) => {
+            const currDate = date.subtract({ days: i });
+            return (
+              <span key={i} className="w-full text-center py-4">
+                {currDate.toLocaleString("en-US", {
+                  day: "numeric",
+                  month: "short",
+                })}
+              </span>
+            );
+          })}
           {Array.from({ length: 7 }).map((_, i) => (
             <>
               <h4>commit</h4>
-              {Array.from({ length: 7 }).map((_, i) => (
+              {Array.from({ length: 14 }).map((_, i) => (
                 <Checkbox
                   key={i}
-                  className="h-12 w-full bg-zinc-900 border-none rounded-none"
+                  tabIndex={i}
+                  className="h-12 w-full bg-zinc-900 border-none rounded-none focus-visible:ring-inset focus-visible:ring-offset-0 data-[state=checked]:ring-orange-100"
                 />
               ))}
             </>
