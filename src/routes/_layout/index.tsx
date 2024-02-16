@@ -41,14 +41,12 @@ function Index() {
 
   return (
     <div>
-      <h1 className="text-3xl">
-        Habits
-      </h1>
+      <h1 className="text-3xl">Habits</h1>
       <main className="py-8">
         <Card className="px-6 py-4">
           <section
             ref={habitGridRef}
-            className={`grid text-zinc-400 w-full mx-auto items-center`}
+            className={"mx-auto grid w-full items-center text-zinc-400"}
             style={{
               gridTemplateColumns: `${habitTitleWidth}px repeat(auto-fill, 64px)`,
             }}
@@ -57,7 +55,7 @@ function Index() {
             {Array.from({ length: habitBlockCount }).map((_, i) => {
               const currDate = date.subtract({ days: i });
               return (
-                <div key={"habitDate" + i} className="w-full text-center py-4">
+                <div key={"habitDate" + i} className="w-full py-4 text-center">
                   {currDate.toLocaleString("en-US", {
                     day: "numeric",
                     month: "short",
@@ -67,7 +65,7 @@ function Index() {
             })}
             {Array.from({ length: colCount }).map((_, i) => (
               <>
-                <h4 key={"habitTitle" + i} className="text-left px-4">
+                <h4 key={"habitTitle" + i} className="px-4 text-left">
                   commit on github
                 </h4>
                 {Array.from({ length: habitBlockCount }).map((_, j) => (
@@ -75,7 +73,10 @@ function Index() {
                     key={"habitCheck" + j}
                     tabIndex={j}
                     className={cn(
-                      "h-12 w-16  bg-background-l border-none rounded-none focus-visible:ring-inset focus-visible:ring-offset-0 data-[state=checked]:ring-orange-100 hover:bg-primary-l",
+                      `h-12 w-16 rounded-none border-none bg-background-l
+                      hover:bg-primary-l focus-visible:ring-inset
+                      focus-visible:ring-offset-0
+                      data-[state=checked]:ring-orange-100`,
                       {
                         // "bg-background-xl": j % 2 === 0,
                         "bg-secondary": j % 2 === 0,

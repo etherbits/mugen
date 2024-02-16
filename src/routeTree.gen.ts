@@ -10,34 +10,34 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as LayoutImport } from './routes/_layout'
-import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as LayoutImport } from "./routes/_layout";
+import { Route as LayoutIndexImport } from "./routes/_layout/index";
 
 // Create/Update Routes
 
 const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
+  id: "/_layout",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const LayoutIndexRoute = LayoutIndexImport.update({
-  path: '/',
+  path: "/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/_layout': {
-      preLoaderRoute: typeof LayoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/': {
-      preLoaderRoute: typeof LayoutIndexImport
-      parentRoute: typeof LayoutImport
-    }
+    "/_layout": {
+      preLoaderRoute: typeof LayoutImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/_layout/": {
+      preLoaderRoute: typeof LayoutIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
   }
 }
 
@@ -45,6 +45,6 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   LayoutRoute.addChildren([LayoutIndexRoute]),
-])
+]);
 
 /* prettier-ignore-end */

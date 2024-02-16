@@ -27,7 +27,9 @@ export default function ProfileDropdown() {
         <DropdownMenuSeparator />
         <ThemeToggleSub />
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-destructive">Log out</DropdownMenuItem>
+        <DropdownMenuItem className="text-destructive">
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -37,7 +39,7 @@ function ThemeToggleSub() {
   const { setTheme } = useTheme();
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger >Theme</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
       <DropdownMenuSubContent sideOffset={12}>
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light

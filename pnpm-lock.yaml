@@ -97,6 +97,9 @@ devDependencies:
   prettier-plugin-classnames:
     specifier: ^0.6.0
     version: 0.6.0(prettier@3.2.5)
+  prettier-plugin-merge:
+    specifier: ^0.6.0
+    version: 0.6.0(prettier@3.2.5)
   prettier-plugin-tailwindcss:
     specifier: ^0.5.11
     version: 0.5.11(prettier@3.2.5)
@@ -2171,6 +2174,11 @@ packages:
   /didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
 
+  /diff@5.1.0:
+    resolution: {integrity: sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==}
+    engines: {node: '>=0.3.1'}
+    dev: true
+
   /dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
@@ -3360,6 +3368,16 @@ packages:
       prettier-plugin-astro:
         optional: true
     dependencies:
+      prettier: 3.2.5
+    dev: true
+
+  /prettier-plugin-merge@0.6.0(prettier@3.2.5):
+    resolution: {integrity: sha512-zpWREE7u+ta9HgjtxqZSG/nTPy8QqiwGz2fY+GsBKS3LXLIAZeB45H8uq24LuQh83Seo/Stj37GjjyTHk0GMiw==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      prettier: ^2 || ^3
+    dependencies:
+      diff: 5.1.0
       prettier: 3.2.5
     dev: true
 
