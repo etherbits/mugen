@@ -78,8 +78,7 @@ function Index() {
                       focus-visible:ring-offset-0
                       data-[state=checked]:ring-orange-100`,
                       {
-                        // "bg-background-xl": j % 2 === 0,
-                        "bg-secondary": j % 2 === 0,
+                        "bg-background-xl": j % 2 === 0,
                         "rounded-tl-md": i === 0 && j === 0,
                         "rounded-bl-md": i === colCount - 1 && j === 0,
                         "rounded-tr-md": i === 0 && j === habitBlockCount - 1,
