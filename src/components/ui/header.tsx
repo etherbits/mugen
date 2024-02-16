@@ -12,10 +12,10 @@ import ProfileDropdown from "./profile-dropdown";
 
 const Header = () => {
   return (
-    <header className="flex justify-between px-16 py-4">
+    <header className="flex justify-between px-8 py-6">
       <h1 className="text-2xl">Mugen</h1>
       <section className="flex gap-4">
-        <ProfileDropdown/>
+        <ProfileDropdown />
       </section>
     </header>
   );

@@ -41,6 +41,9 @@ function Index() {
 
   return (
     <div>
+      <h1 className="text-3xl">
+        Habits
+      </h1>
       <main className="py-8">
         <Card className="px-6 py-4">
           <section

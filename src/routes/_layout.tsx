@@ -9,7 +9,9 @@ function Layout() {
   return (
     <>
       <Header />
-      <Outlet />
+      <div className="px-8 py-6">
+        <Outlet />
+      </div>
     </>
   );
 }
