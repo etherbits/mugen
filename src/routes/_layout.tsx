@@ -1,3 +1,4 @@
+import Header from "@/components/ui/header";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout")({
@@ -6,8 +7,9 @@ export const Route = createFileRoute("/_layout")({
 
 function Layout() {
   return (
-    <div className="px-6 py-4">
+    <>
+      <Header />
       <Outlet />
-    </div>
+    </>
   );
 }

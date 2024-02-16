@@ -1,5 +1,3 @@
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
@@ -17,7 +15,6 @@ const colCount = 16;
 function Index() {
   const habitGridRef = useRef<HTMLDivElement>(null);
   const date = Temporal.Now.plainDateISO();
-  const calDay = date.day;
   const [habitBlockCount, setHabitBlockCount] = useState(0);
   const [habitTitleWidth, setHabitTitleWidth] = useState(habitTitleMinWidth);
 
@@ -44,16 +41,6 @@ function Index() {
 
   return (
     <div>
-      <div className="flex justify-between">
-        <h1 className="text-2xl">Mugen</h1>
-        <div className="flex gap-4">
-          <Avatar>
-            <AvatarImage src="https://avatars.githubusercontent.com/u/43289097?s=160&v=4" />
-            <AvatarFallback>User</AvatarFallback>
-          </Avatar>
-          <ThemeToggle />
-        </div>
-      </div>
       <main className="py-8">
         <Card className="px-6 py-4">
           <section
