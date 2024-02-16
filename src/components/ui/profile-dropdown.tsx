@@ -22,11 +22,11 @@ export default function ProfileDropdown() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel >Theme</DropdownMenuLabel>
+        <DropdownMenuLabel>Username</DropdownMenuLabel>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
         <ThemeToggleSub />
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Account</DropdownMenuLabel>
-        <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem className="text-destructive">Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -37,8 +37,8 @@ function ThemeToggleSub() {
   const { setTheme } = useTheme();
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger >Change theme</DropdownMenuSubTrigger>
-      <DropdownMenuSubContent>
+      <DropdownMenuSubTrigger >Theme</DropdownMenuSubTrigger>
+      <DropdownMenuSubContent sideOffset={12}>
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
         </DropdownMenuItem>
