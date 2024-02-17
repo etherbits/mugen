@@ -63,3 +63,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+li {
+  list-style: none;
+}
