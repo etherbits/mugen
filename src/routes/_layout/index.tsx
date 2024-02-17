@@ -1,9 +1,11 @@
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -11,6 +13,12 @@ export const Route = createFileRoute("/_layout/")({
 
 const habitTitleMinWidth = 160;
 const colCount = 16;
+
+function addHabit() {
+  invoke("add_habit", { habitName: "Commit To Github" }).then((res) => {
+    console.log(res);
+  });
+}
 
 function Index() {
   const habitGridRef = useRef<HTMLDivElement>(null);
@@ -50,7 +58,9 @@ function Index() {
               gridTemplateColumns: `${habitTitleWidth}px repeat(auto-fill, 64px)`,
             }}
           >
-            <div />
+            <Button className="my-auto mb-3 mr-8" onClick={addHabit}>
+              Add Habit
+            </Button>
             {Array.from({ length: habitBlockCount }).map((_, i) => {
               const currDate = date.subtract({ days: i });
               return (
