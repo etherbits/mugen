@@ -18,9 +18,9 @@ const Header = () => {
   const currentPath = router.location.pathname;
 
   return (
-    <header className="flex justify-between items-center px-8 py-6">
+    <header className="flex items-center justify-between px-8 py-6">
       <span className="text-2xl">Mugen</span>
-      <h1 className="text-foreground text-xl">
+      <h1 className="text-xl text-foreground">
         {navLinks.find((navLink) => navLink.path === currentPath)?.title}
       </h1>
       <section className="flex gap-4">
