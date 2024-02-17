@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 import { Link, useRouterState } from "@tanstack/react-router";
 
 const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Dashboard", path: "/dashboard" },
+  { name: "Home", title: "Habit Tracking", path: "/" },
+  { name: "Dashboard", title: "Habit Statistics", path: "/dashboard" },
 ];
 
 const Header = () => {
@@ -18,8 +18,11 @@ const Header = () => {
   const currentPath = router.location.pathname;
 
   return (
-    <header className="flex justify-between px-8 py-6">
-      <h1 className="text-2xl">Mugen</h1>
+    <header className="flex justify-between items-center px-8 py-6">
+      <span className="text-2xl">Mugen</span>
+      <h1 className="text-zinc-300 text-xl">
+        {navLinks.find((navLink) => navLink.path === currentPath)?.title}
+      </h1>
       <section className="flex gap-4">
         <NavigationMenu>
           {navLinks.map(({ name, path }) => (

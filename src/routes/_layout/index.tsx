@@ -41,9 +41,8 @@ function Index() {
 
   return (
     <div>
-      <h1 className="text-3xl">Habits</h1>
       <main className="py-8">
-        <Card className="px-6 py-4">
+        <Card className="px-12 py-10">
           <section
             ref={habitGridRef}
             className={"mx-auto grid w-full items-center text-zinc-400"}
@@ -55,7 +54,7 @@ function Index() {
             {Array.from({ length: habitBlockCount }).map((_, i) => {
               const currDate = date.subtract({ days: i });
               return (
-                <div key={"habitDate" + i} className="w-full py-4 text-center">
+                <div key={"habitDate" + i} className="w-full pb-4 text-center">
                   {currDate.toLocaleString("en-US", {
                     day: "numeric",
                     month: "short",
@@ -65,7 +64,7 @@ function Index() {
             })}
             {Array.from({ length: colCount }).map((_, i) => (
               <>
-                <h4 key={"habitTitle" + i} className="px-4 text-left">
+                <h4 key={"habitTitle" + i} className="pr-8 text-left">
                   commit on github
                 </h4>
                 {Array.from({ length: habitBlockCount }).map((_, j) => (
