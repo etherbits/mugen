@@ -1,35 +1,27 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/components/theme-provider";
+import { Cog } from "lucide-react";
+import { Button } from "./button";
 
-export default function ProfileDropdown() {
+export default function OptionsDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar>
-          <AvatarImage src="https://avatars.githubusercontent.com/u/43289097?s=160&v=4" />
-          <AvatarFallback>User</AvatarFallback>
-        </Avatar>
+        <Button variant="outline" size={"icon"}>
+          <Cog size={24} />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Username</DropdownMenuLabel>
         <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuSeparator />
         <ThemeToggleSub />
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-destructive">
-          Log out
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
