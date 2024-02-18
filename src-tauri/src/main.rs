@@ -3,8 +3,12 @@
 
 const SHOULD_RESET_DB: bool = true;
 
+mod helpers;
+
+use helpers::fs::{does_file_exist, get_string_from_path_buf};
+
 use rusqlite::Connection;
-use std::{fs, path::PathBuf, sync::Mutex};
+use std::{path::PathBuf, sync::Mutex};
 use tauri::{Manager, State};
 
 struct DB {
@@ -42,23 +46,6 @@ fn delete_db_tables(connection: &Connection) {
         Ok(_) => println!("Habits table deleted"),
         Err(_) => println!("Error while deleting habits table"),
     };
-}
-
-fn get_string_from_path_buf(path_buf: PathBuf) -> String {
-    match path_buf.into_os_string().into_string() {
-        Ok(file_path) => file_path,
-        Err(_) => {
-            println!("Error while converting file path to string");
-            std::process::exit(1);
-        }
-    }
-}
-
-fn does_file_exist(file_path: &str) -> bool {
-    match fs::metadata(file_path) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
 }
 
 fn init_db(base_data_path: PathBuf) -> DB {
