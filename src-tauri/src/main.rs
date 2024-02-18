@@ -13,10 +13,10 @@ fn add_habit(habit_name: String, db_state: State<DB>) -> String {
         Err(_) => return "Server Error".to_string(),
     };
 
-    match connection.execute("INSERT INTO habits VALUES (?1);", [&habit_name]) {
+    match connection.execute("INSERT INTO habits (name, type) VALUES (?1, \"DURATION\");", [&habit_name]) {
         Ok(_) => println!("Habit added to database"),
-        Err(_) => {
-            println!("Error while adding habit to database");
+        Err(err) => {
+            println!("Error while adding habit to database: {:?}", err);
             return "Server Error".to_string();
         }
     }

@@ -11,7 +11,15 @@ pub struct DB {
 }
 
 pub fn create_db_tables(connection: &Connection) {
-    match connection.execute("CREATE TABLE habits (name TEXT);", ()) {
+    match connection.execute("
+        CREATE TABLE habits (
+            id INTEGER PRIMARY KEY,
+            name TEXT CHECK(LENGTH(name) <= 128) NOT NULL, 
+            type TEXT CHECK(type IN (\"BINARY\", \"DURATION\", \"AMOUNT\")) NOT NULL default \"BINARY\",
+            creation_date TEXT NOT NULL default CURRENT_TIMESTAMP
+        );",
+        (),
+    ) {
         Ok(_) => println!("Habits table created"),
         Err(_) => println!("Error while creating habits table"),
     };
@@ -25,7 +33,7 @@ pub fn delete_db_tables(connection: &Connection) {
 }
 
 pub fn init_db(base_data_path: PathBuf) -> DB {
-    let file_path_buf = base_data_path.join("habits.db");
+    let file_path_buf = base_data_path.join("mugen.db");
     let file_path = get_string_from_path_buf(file_path_buf);
     let file_exists = does_file_exist(&file_path);
 
@@ -41,9 +49,7 @@ pub fn init_db(base_data_path: PathBuf) -> DB {
 
     if !file_exists {
         create_db_tables(&connection);
-    }
-
-    if SHOULD_RESET_DB {
+    } else if SHOULD_RESET_DB {
         delete_db_tables(&connection);
         create_db_tables(&connection);
     }
