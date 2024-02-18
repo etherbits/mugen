@@ -1,6 +1,6 @@
 const SHOULD_RESET_DB: bool = true;
 
-use std::{path::PathBuf, sync::Mutex};
+use std::{fs::read_to_string, path::PathBuf, sync::Mutex};
 
 use rusqlite::Connection;
 
@@ -11,24 +11,32 @@ pub struct DB {
 }
 
 pub fn create_db_tables(connection: &Connection) {
-    match connection.execute("
-        CREATE TABLE habits (
-            id INTEGER PRIMARY KEY,
-            name TEXT CHECK(LENGTH(name) <= 128) NOT NULL, 
-            type TEXT CHECK(type IN (\"BINARY\", \"DURATION\", \"AMOUNT\")) NOT NULL default \"BINARY\",
-            creation_date TEXT NOT NULL default CURRENT_TIMESTAMP
-        );",
-        (),
-    ) {
-        Ok(_) => println!("Habits table created"),
-        Err(_) => println!("Error while creating habits table"),
+    let create_db_query = match read_to_string("db_queries/create_db_query.sql") {
+        Ok(query) => query,
+        Err(_) => {
+            println!("Error while reading create_db_query.sql");
+            std::process::exit(1);
+        }
+    };
+
+    match connection.execute(&create_db_query, ()) {
+        Ok(_) => println!("DB tables created"),
+        Err(_) => println!("Error while creating DB tables"),
     };
 }
 
 pub fn delete_db_tables(connection: &Connection) {
-    match connection.execute("DROP TABLE habits;", ()) {
-        Ok(_) => println!("Habits table deleted"),
-        Err(_) => println!("Error while deleting habits table"),
+    let delete_db_query = match read_to_string("db_queries/delete_db_query.sql") {
+        Ok(query) => query,
+        Err(_) => {
+            println!("Error while reading delete_db_query.sql");
+            std::process::exit(1);
+        }
+    };
+
+    match connection.execute(&delete_db_query, ()) {
+        Ok(_) => println!("DB tables deleted"),
+        Err(_) => println!("Error while deleting DB tables"),
     };
 }
 
