@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+const SHOULD_RESET_DB: bool = true;
+
 use std::{fs, path::PathBuf, sync::Mutex};
 
 use rusqlite::Connection;
@@ -61,6 +63,14 @@ fn init_db(base_data_path: PathBuf) -> DB {
         match connection.execute("CREATE TABLE habits (name TEXT);", ()) {
             Ok(_) => println!("Habits table created"),
             Err(_) => println!("Error while creating habits table"),
+        }
+    }
+
+    if SHOULD_RESET_DB {
+        println!("Resetting database");
+        match connection.execute("DROP TABLE habits;", ()) {
+            Ok(_) => println!("Database reset"),
+            Err(_) => println!("Error while resetting database"),
         }
     }
 
