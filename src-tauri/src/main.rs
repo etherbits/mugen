@@ -3,9 +3,8 @@
 
 const SHOULD_RESET_DB: bool = true;
 
-use std::{fs, path::PathBuf, sync::Mutex};
-
 use rusqlite::Connection;
+use std::{fs, path::PathBuf, sync::Mutex};
 use tauri::{Manager, State};
 
 struct DB {
@@ -31,25 +30,44 @@ fn add_habit(habit_name: String, db_state: State<DB>) -> String {
     format!("Hello, {}! You've been greeted from Rust!", habit_name)
 }
 
-fn init_db(base_data_path: PathBuf) -> DB {
-    let file_path_buf = base_data_path.join("habits.db");
+fn create_db_tables(connection: &Connection) {
+    match connection.execute("CREATE TABLE habits (name TEXT);", ()) {
+        Ok(_) => println!("Habits table created"),
+        Err(_) => println!("Error while creating habits table"),
+    };
+}
 
-    let file_path = match file_path_buf.into_os_string().into_string() {
+fn delete_db_tables(connection: &Connection) {
+    match connection.execute("DROP TABLE habits;", ()) {
+        Ok(_) => println!("Habits table deleted"),
+        Err(_) => println!("Error while deleting habits table"),
+    };
+}
+
+fn get_string_from_path_buf(path_buf: PathBuf) -> String {
+    match path_buf.into_os_string().into_string() {
         Ok(file_path) => file_path,
         Err(_) => {
             println!("Error while converting file path to string");
             std::process::exit(1);
         }
-    };
-
-    let mut file_exists = false;
-
-    match fs::metadata(&file_path) {
-        Ok(_) => file_exists = true,
-        Err(_) => println!("Database file not found"),
     }
+}
+
+fn does_file_exist(file_path: &str) -> bool {
+    match fs::metadata(file_path) {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+
+fn init_db(base_data_path: PathBuf) -> DB {
+    let file_path_buf = base_data_path.join("habits.db");
+    let file_path = get_string_from_path_buf(file_path_buf);
+    let file_exists = does_file_exist(&file_path);
 
     println!("Database file path: {}", file_path);
+
     let connection = match Connection::open(&file_path) {
         Ok(connection) => connection,
         Err(_) => {
@@ -59,19 +77,12 @@ fn init_db(base_data_path: PathBuf) -> DB {
     };
 
     if !file_exists {
-        println!("Creating habits table");
-        match connection.execute("CREATE TABLE habits (name TEXT);", ()) {
-            Ok(_) => println!("Habits table created"),
-            Err(_) => println!("Error while creating habits table"),
-        }
+        create_db_tables(&connection);
     }
 
     if SHOULD_RESET_DB {
-        println!("Resetting database");
-        match connection.execute("DROP TABLE habits;", ()) {
-            Ok(_) => println!("Database reset"),
-            Err(_) => println!("Error while resetting database"),
-        }
+        delete_db_tables(&connection);
+        create_db_tables(&connection);
     }
 
     DB {
