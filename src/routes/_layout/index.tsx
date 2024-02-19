@@ -7,6 +7,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Habit } from "src-tauri/bindings/Habit";
+import { HabitEntry } from "src-tauri/bindings/HabitEntry";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -14,11 +15,20 @@ export const Route = createFileRoute("/_layout/")({
 
 const habitTitleMinWidth = 160;
 
-function addHabit() {
+function createHabit() {
   invoke("create_habit", { habitName: "Commit To Github" }).then((res) => {
     const resData = JSON.parse(res as string);
 
     console.log(resData);
+  });
+}
+
+function createHabitEntry(
+  habitId: HabitEntry["habit_id"],
+  value: HabitEntry["value"],
+) {
+  invoke("create_habit_entry", { habitId, value }).then((res) => {
+    console.log(res);
   });
 }
 
@@ -67,7 +77,7 @@ function Index() {
               gridTemplateColumns: `${habitTitleWidth}px repeat(auto-fill, 64px)`,
             }}
           >
-            <Button className="my-auto mb-3 mr-8" onClick={addHabit}>
+            <Button className="my-auto mb-3 mr-8" onClick={createHabit}>
               Add Habit
             </Button>
             {Array.from({ length: habitBlockCount }).map((_, i) => {
@@ -92,6 +102,8 @@ function Index() {
                     <Checkbox
                       key={"habitCheck" + j}
                       tabIndex={j}
+                      onClick={() => createHabitEntry(habit.id, 1)}
+
                       className={cn(
                         `h-12 w-16 rounded-none border-none bg-background-l
                         hover:bg-primary-l focus-visible:ring-inset

@@ -84,7 +84,7 @@ impl HabitController {
                 id,
                 habit_id: row.get("habit_id")?,
                 value: row.get("value")?,
-                entry_timestamp: row.get("entry_timestamp")?,
+                creation_timestamp: row.get("creation_timestamp")?,
             })
         })?;
 
@@ -100,7 +100,7 @@ impl HabitController {
                 id: row.get("id")?,
                 habit_id: row.get("habit_id")?,
                 value: row.get("value")?,
-                entry_timestamp: row.get("entry_timestamp")?,
+                creation_timestamp: row.get("creation_timestamp")?,
             })
         })?;
 
@@ -111,4 +111,6 @@ impl HabitController {
 
         Ok(habit_entries)
     }
+
+    // pub fn get_habits_with_entries
 }

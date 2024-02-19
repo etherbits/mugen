@@ -16,7 +16,7 @@ pub struct Habit {
     pub id: i64,
     pub name: String,
     pub habit_type: HabitType,
-    pub target: i64,
+    pub target: i32,
     pub is_positive: bool,
     pub is_archived: bool,
     pub creation_timestamp: String,
@@ -27,6 +27,6 @@ pub struct Habit {
 pub struct HabitEntry {
     pub id: i64,
     pub habit_id: i64,
-    pub value: i64,
-    pub entry_timestamp: String,
+    pub value: i32,
+    pub creation_timestamp: String,
 }
