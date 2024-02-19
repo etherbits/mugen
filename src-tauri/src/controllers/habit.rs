@@ -1,4 +1,4 @@
-use rusqlite::{Connection, Error};
+use rusqlite::{params, Connection, Error};
 use std::{str::FromStr, sync::Mutex};
 
 use crate::models::habit::{Habit, HabitEntry, HabitType, HabitWithEntries};
@@ -70,12 +70,17 @@ impl HabitController {
         Ok(habits)
     }
 
-    pub fn create_habit_entry(&self, habit_id: i64, value: i64) -> Result<HabitEntry, Error> {
+    pub fn create_habit_entry(
+        &self,
+        habit_id: i64,
+        value: i64,
+        completion_date: String,
+    ) -> Result<HabitEntry, Error> {
         let conn = self.connection.lock().unwrap();
 
         conn.execute(
-            "INSERT INTO habit_entries (habit_id, value) VALUES ($1, $2)",
-            [habit_id, value],
+            "INSERT INTO habit_entries (habit_id, value, completion_date) VALUES (?1, ?2, ?3)",
+            params![habit_id, value, completion_date],
         )?;
 
         let id = conn.last_insert_rowid();

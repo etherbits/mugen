@@ -68,9 +68,12 @@ function Index() {
     value: HabitEntry["value"],
     completionDate: HabitEntry["completion_date"],
   ) {
-    invoke("create_habit_entry", { habitId, value }).then((res) => {
-      console.log(res);
-    });
+    invoke("create_habit_entry", { habitId, value, completionDate }).then(
+      (res) => {
+        console.log(res);
+        updateHabitEntries();
+      },
+    );
   }
 
   return (
@@ -102,9 +105,7 @@ function Index() {
               if (habit.is_archived) return null;
 
               const entryDates = entries.map((entry) =>
-                Temporal.PlainDateTime.from(
-                  entry.completion_date,
-                )
+                Temporal.PlainDateTime.from(entry.completion_date),
               );
 
               return (
@@ -114,28 +115,35 @@ function Index() {
                   </h4>
                   {Array.from({ length: habitBlockCount }).map((_, j) => {
                     const currDate = date.subtract({ days: j });
-                    return <Checkbox
-                      key={"habitCheck" + j}
-                      checked={entryDates.some((entryDate) =>entryDate.equals(currDate))}
-                      tabIndex={j}
-                      onClick={() => createHabitEntry(habit.id, 1, currDate.toString())}
-                      className={cn(
-                        `h-12 w-16 rounded-none border-none bg-background-l
-                        hover:bg-primary-l focus-visible:ring-inset
-                        focus-visible:ring-offset-0
-                        data-[state=checked]:ring-orange-100`,
-                        {
-                          "bg-background-xl": j % 2 === 0,
-                          "rounded-tl-md": i === 0 && j === 0,
-                          "rounded-bl-md":
-                            i === habitsWithEntries.length - 1 && j === 0,
-                          "rounded-tr-md": i === 0 && j === habitBlockCount - 1,
-                          "rounded-br-md":
-                            i === habitsWithEntries.length - 1 &&
-                            j === habitBlockCount - 1,
-                        },
-                      )}
-                    />
+                    return (
+                      <Checkbox
+                        key={"habitCheck" + j}
+                        checked={entryDates.some((entryDate) =>
+                          entryDate.equals(currDate),
+                        )}
+                        tabIndex={j}
+                        onClick={() =>
+                          createHabitEntry(habit.id, 1, currDate.toString())
+                        }
+                        className={cn(
+                          `h-12 w-16 rounded-none border-none bg-background-l
+                          hover:bg-primary-l focus-visible:ring-inset
+                          focus-visible:ring-offset-0
+                          data-[state=checked]:ring-orange-100`,
+                          {
+                            "bg-background-xl": j % 2 === 0,
+                            "rounded-tl-md": i === 0 && j === 0,
+                            "rounded-bl-md":
+                              i === habitsWithEntries.length - 1 && j === 0,
+                            "rounded-tr-md":
+                              i === 0 && j === habitBlockCount - 1,
+                            "rounded-br-md":
+                              i === habitsWithEntries.length - 1 &&
+                              j === habitBlockCount - 1,
+                          },
+                        )}
+                      />
+                    );
                   })}
                 </>
               );
