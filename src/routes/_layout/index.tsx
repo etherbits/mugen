@@ -6,6 +6,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import { Habit } from "src-tauri/bindings/Habit";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -15,7 +16,7 @@ const habitTitleMinWidth = 160;
 const colCount = 16;
 
 function addHabit() {
-  invoke("add_habit", { habitName: "Commit To Github" }).then((res) => {
+  invoke("create_habit", { habitName: "Commit To Github" }).then((res) => {
     const resData = JSON.parse(res as string);
 
     console.log(resData);
@@ -27,8 +28,15 @@ function Index() {
   const date = Temporal.Now.plainDateISO();
   const [habitBlockCount, setHabitBlockCount] = useState(0);
   const [habitTitleWidth, setHabitTitleWidth] = useState(habitTitleMinWidth);
+  const [habits, setHabits] = useState<Habit[]>([]);
 
   useEffect(() => {
+    invoke("get_all_habits").then((res) => {
+      const resData = JSON.parse(res as string);
+
+      setHabits(resData);
+    });
+
     function resizeHandler() {
       const habitAreaWidth =
         (habitGridRef.current?.clientWidth || 0) - habitTitleMinWidth;
@@ -74,10 +82,12 @@ function Index() {
                 </div>
               );
             })}
-            {Array.from({ length: colCount }).map((_, i) => (
-              <>
+            {habits.map((habit, i) => {
+              if (habit.is_archived) return null;
+              return <>
                 <h4 key={"habitTitle" + i} className="pr-8 text-left">
-                  commit on github
+                  {habit.name}
+                  
                 </h4>
                 {Array.from({ length: habitBlockCount }).map((_, j) => (
                   <Checkbox
@@ -100,7 +110,7 @@ function Index() {
                   />
                 ))}
               </>
-            ))}
+            })}
           </section>
         </Card>
       </main>

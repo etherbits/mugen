@@ -10,7 +10,7 @@ use tauri::{Manager, State};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn add_habit(habit_name: String, state: State<HabitController>) -> String {
+fn create_habit(habit_name: String, state: State<HabitController>) -> String {
     let habit = match state.create_habit(&habit_name, models::habit::HabitType::Binary){ 
         Ok(habit) => habit,
         Err(err) => {
@@ -24,6 +24,25 @@ fn add_habit(habit_name: String, state: State<HabitController>) -> String {
         Err(err) => {
             println!("Error while serializing habit: {}", err);
             "Error while serializing habit".to_string()
+        }
+    }
+}
+
+#[tauri::command]
+fn get_all_habits(state: State<HabitController>) -> String {
+    let habits = match state.get_all_habits() {
+        Ok(habits) => habits,
+        Err(err) => {
+            println!("Error while getting habits: {}", err);
+            return "Error while getting habits".to_string();
+        }
+    };
+
+    match serde_json::to_string(&habits) {
+        Ok(habits_json) => habits_json,
+        Err(err) => {
+            println!("Error while serializing habits: {}", err);
+            "Error while serializing habits".to_string()
         }
     }
 }
@@ -45,7 +64,7 @@ fn main() {
             app.manage(habit_controller);
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![add_habit])
+        .invoke_handler(tauri::generate_handler![create_habit, get_all_habits])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

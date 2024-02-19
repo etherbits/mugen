@@ -1,14 +1,17 @@
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
+use ts_rs::TS;
 
-#[derive(Display, EnumString, Serialize, Deserialize)]
+#[derive(Display, EnumString, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub enum HabitType {
     Binary,
     Duration,
     Amount,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Habit {
     pub id: i64,
     pub name: String,
