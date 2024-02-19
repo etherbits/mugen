@@ -94,6 +94,9 @@ function Index() {
             })}
             {habitsWithEntries.map(({habit, entries}, i) => {
               if (habit.is_archived) return null;
+              
+              const entryDates = entries.map((entry) => entry.entry_timestamp);
+
               return (
                 <>
                   <h4 key={"habitTitle" + i} className="pr-8 text-left">
