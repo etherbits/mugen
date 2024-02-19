@@ -6,7 +6,6 @@ import { Temporal } from "@js-temporal/polyfill";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Habit } from "src-tauri/bindings/Habit";
 import { HabitEntry } from "src-tauri/bindings/HabitEntry";
 import { HabitWithEntries } from "src-tauri/bindings/HabitWithEntries";
 
@@ -67,6 +66,7 @@ function Index() {
   function createHabitEntry(
     habitId: HabitEntry["habit_id"],
     value: HabitEntry["value"],
+    completionDate: HabitEntry["completion_date"],
   ) {
     invoke("create_habit_entry", { habitId, value }).then((res) => {
       console.log(res);
@@ -103,22 +103,22 @@ function Index() {
 
               const entryDates = entries.map((entry) =>
                 Temporal.PlainDateTime.from(
-                  entry.creation_timestamp,
-                ).toLocaleString(),
+                  entry.completion_date,
+                )
               );
-
-              console.log("dates: ", entryDates);
 
               return (
                 <>
                   <h4 key={"habitTitle" + i} className="pr-8 text-left">
                     {habit.name}
                   </h4>
-                  {Array.from({ length: habitBlockCount }).map((_, j) => (
-                    <Checkbox
+                  {Array.from({ length: habitBlockCount }).map((_, j) => {
+                    const currDate = date.subtract({ days: j });
+                    return <Checkbox
                       key={"habitCheck" + j}
+                      checked={entryDates.some((entryDate) =>entryDate.equals(currDate))}
                       tabIndex={j}
-                      onClick={() => createHabitEntry(habit.id, 1)}
+                      onClick={() => createHabitEntry(habit.id, 1, currDate.toString())}
                       className={cn(
                         `h-12 w-16 rounded-none border-none bg-background-l
                         hover:bg-primary-l focus-visible:ring-inset
@@ -136,7 +136,7 @@ function Index() {
                         },
                       )}
                     />
-                  ))}
+                  })}
                 </>
               );
             })}

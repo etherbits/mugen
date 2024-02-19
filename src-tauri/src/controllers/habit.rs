@@ -1,4 +1,4 @@
-use rusqlite::{types::Null, Connection, Error};
+use rusqlite::{Connection, Error};
 use std::{str::FromStr, sync::Mutex};
 
 use crate::models::habit::{Habit, HabitEntry, HabitType, HabitWithEntries};
@@ -84,6 +84,7 @@ impl HabitController {
                 id,
                 habit_id: row.get("habit_id")?,
                 value: row.get("value")?,
+                completion_date: row.get("completion_date")?,
                 creation_timestamp: row.get("creation_timestamp")?,
             })
         })?;
@@ -100,6 +101,7 @@ impl HabitController {
                 id: row.get("id")?,
                 habit_id: row.get("habit_id")?,
                 value: row.get("value")?,
+                completion_date: row.get("completion_date")?,
                 creation_timestamp: row.get("creation_timestamp")?,
             })
         })?;

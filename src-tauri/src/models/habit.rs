@@ -28,6 +28,7 @@ pub struct HabitEntry {
     pub id: i64,
     pub habit_id: i64,
     pub value: Option<i32>,
+    pub completion_date: String,
     pub creation_timestamp: String,
 }
 

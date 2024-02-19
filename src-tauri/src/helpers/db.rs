@@ -1,4 +1,4 @@
-const SHOULD_RESET_DB: bool = false;
+const SHOULD_RESET_DB: bool = true;
 
 use std::{fs::read_to_string, path::PathBuf, sync::Mutex};
 
