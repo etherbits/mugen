@@ -1,7 +1,7 @@
 use rusqlite::{Connection, Error};
 use std::{str::FromStr, sync::Mutex};
 
-use crate::models::habit::{Habit, HabitType};
+use crate::models::habit::{Habit, HabitEntry, HabitType};
 
 pub struct HabitController {
     connection: Mutex<Connection>,
@@ -68,5 +68,47 @@ impl HabitController {
         }
 
         Ok(habits)
+    }
+
+    pub fn add_habit_entry(&self, habit_id: i64, value: i64) -> Result<HabitEntry, Error> {
+        let conn = self.connection.lock().unwrap();
+
+        conn.execute(
+            "INSERT INTO habit_entries (habit_id, value) VALUES ($1, $2)",
+            [habit_id, value],
+        )?;
+
+        let id = conn.last_insert_rowid();
+        let data = conn.query_row("SELECT * FROM habit_entries WHERE id = $1", [id], |row| {
+            Ok(HabitEntry {
+                id,
+                habit_id: row.get("habit_id")?,
+                value: row.get("value")?,
+                entry_timestamp: row.get("entry_timestamp")?,
+            })
+        })?;
+
+        Ok(data)
+    }
+
+    pub fn get_all_habit_entries(&self, habit_id: i64) -> Result<Vec<HabitEntry>, Error> {
+        let conn = self.connection.lock().unwrap();
+
+        let mut stmt = conn.prepare("SELECT * FROM habit_entries WHERE habit_id = $1")?;
+        let habit_entry_iter = stmt.query_map([habit_id], |row| {
+            Ok(HabitEntry {
+                id: row.get("id")?,
+                habit_id: row.get("habit_id")?,
+                value: row.get("value")?,
+                entry_timestamp: row.get("entry_timestamp")?,
+            })
+        })?;
+
+        let mut habit_entries = Vec::new();
+        for habit_entry in habit_entry_iter {
+            habit_entries.push(habit_entry?);
+        }
+
+        Ok(habit_entries)
     }
 }

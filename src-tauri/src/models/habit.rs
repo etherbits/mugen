@@ -21,3 +21,12 @@ pub struct Habit {
     pub is_archived: bool,
     pub creation_timestamp: String,
 }
+
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
+pub struct HabitEntry {
+    pub id: i64,
+    pub habit_id: i64,
+    pub value: i64,
+    pub entry_timestamp: String,
+}
