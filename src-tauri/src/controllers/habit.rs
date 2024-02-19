@@ -8,11 +8,15 @@ pub struct HabitController {
 }
 
 impl HabitController {
+    pub fn new(connection: Mutex<Connection>) -> Self {
+        Self { connection }
+    }
+
     pub fn create_habit(&self, name: &str, habit_type: HabitType) -> Result<Habit, Error> {
-        let mut conn = self.connection.lock().unwrap();
+        let conn = self.connection.lock().unwrap();
 
         conn.execute(
-            "INSERT INTO habits (name, habit_type) VALUES ($1, $2)",
+            "INSERT INTO habits (name, type) VALUES ($1, $2)",
             [name, habit_type.to_string().as_str()],
         )?;
 

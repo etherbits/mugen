@@ -16,7 +16,9 @@ const colCount = 16;
 
 function addHabit() {
   invoke("add_habit", { habitName: "Commit To Github" }).then((res) => {
-    console.log(res);
+    const resData = JSON.parse(res as string);
+
+    console.log(resData);
   });
 }
 

@@ -1,7 +1,7 @@
 CREATE TABLE habits (
 	id INTEGER PRIMARY KEY,
 	name TEXT CHECK(LENGTH(name) <= 128) NOT NULL, 
-	type TEXT CHECK(type IN ("BINARY", "DURATION", "AMOUNT")) NOT NULL default "BINARY",
+	type TEXT CHECK(type IN ("Binary", "Duration", "Amount")) NOT NULL default "Binary",
 	is_archived INTEGER NOT NULL DEFAULT 0,
 	creation_date TEXT NOT NULL default CURRENT_TIMESTAMP
 );
