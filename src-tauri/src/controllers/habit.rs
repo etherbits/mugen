@@ -25,12 +25,12 @@ impl HabitController {
         let data = conn.query_row("SELECT * FROM habits WHERE id = $1", [id], |row| {
             Ok(Habit {
                 id,
-                name: row.get(1)?,
+                name: row.get("name")?,
                 habit_type,
-                target: row.get(3)?,
-                is_positive: row.get(4)?,
-                is_archived: row.get(5)?,
-                creation_timestamp: row.get(6)?,
+                target: row.get("target")?,
+                is_positive: row.get("is_positive")?,
+                is_archived: row.get("is_archived")?,
+                creation_timestamp: row.get("creation_timestamp")?,
             })
         })?;
 
