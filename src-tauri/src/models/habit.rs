@@ -27,7 +27,7 @@ pub struct Habit {
 pub struct HabitEntry {
     pub id: i64,
     pub habit_id: i64,
-    pub value: i32,
+    pub value: Option<i32>,
     pub creation_timestamp: String,
 }
 

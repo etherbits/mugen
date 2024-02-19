@@ -11,7 +11,7 @@ CREATE TABLE habits (
 CREATE TABLE habit_entries (
 	id INTEGER PRIMARY KEY,
 	value INTEGER,
-	creation_timestamp DATETIME NOT NULL DEFAULT timestamp,
+	creation_timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	habit_id INTEGER NOT NULL,
 	FOREIGN KEY(habit_id) REFERENCES habits(id) ON DELETE CASCADE
 );

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Habit } from "src-tauri/bindings/Habit";
 import { HabitEntry } from "src-tauri/bindings/HabitEntry";
-import {HabitWithEntries} from "src-tauri/bindings/HabitWithEntries";
+import { HabitWithEntries } from "src-tauri/bindings/HabitWithEntries";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -16,36 +16,25 @@ export const Route = createFileRoute("/_layout/")({
 
 const habitTitleMinWidth = 160;
 
-function createHabit() {
-  invoke("create_habit", { habitName: "Commit To Github" }).then((res) => {
-    const resData = JSON.parse(res as string);
-
-    console.log(resData);
-  });
-}
-
-function createHabitEntry(
-  habitId: HabitEntry["habit_id"],
-  value: HabitEntry["value"],
-) {
-  invoke("create_habit_entry", { habitId, value }).then((res) => {
-    console.log(res);
-  });
-}
-
 function Index() {
   const habitGridRef = useRef<HTMLDivElement>(null);
   const date = Temporal.Now.plainDateISO();
   const [habitBlockCount, setHabitBlockCount] = useState(0);
   const [habitTitleWidth, setHabitTitleWidth] = useState(habitTitleMinWidth);
-  const [habitsWithEntries, setHabitsWithEntries] = useState<HabitWithEntries[]>([]);
+  const [habitsWithEntries, setHabitsWithEntries] = useState<
+    HabitWithEntries[]
+  >([]);
 
-  useEffect(() => {
+  function updateHabitEntries() {
     invoke("get_all_habits_with_entries").then((res) => {
       const resData = JSON.parse(res as string);
-
+      console.log(resData);
       setHabitsWithEntries(resData);
     });
+  }
+
+  useEffect(() => {
+    updateHabitEntries();
 
     function resizeHandler() {
       const habitAreaWidth =
@@ -65,7 +54,24 @@ function Index() {
     return () => {
       window.removeEventListener("resize", resizeHandler);
     };
-  });
+  }, []);
+
+  function createHabit() {
+    invoke("create_habit", { habitName: "Commit To Github" }).then((res) => {
+      const resData = JSON.parse(res as string);
+
+      updateHabitEntries();
+    });
+  }
+
+  function createHabitEntry(
+    habitId: HabitEntry["habit_id"],
+    value: HabitEntry["value"],
+  ) {
+    invoke("create_habit_entry", { habitId, value }).then((res) => {
+      console.log(res);
+    });
+  }
 
   return (
     <div>
@@ -92,10 +98,16 @@ function Index() {
                 </div>
               );
             })}
-            {habitsWithEntries.map(({habit, entries}, i) => {
+            {habitsWithEntries.map(({ habit, entries }, i) => {
               if (habit.is_archived) return null;
-              
-              const entryDates = entries.map((entry) => entry.entry_timestamp);
+
+              const entryDates = entries.map((entry) =>
+                Temporal.PlainDateTime.from(
+                  entry.creation_timestamp,
+                ).toLocaleString(),
+              );
+
+              console.log("dates: ", entryDates);
 
               return (
                 <>
@@ -115,7 +127,8 @@ function Index() {
                         {
                           "bg-background-xl": j % 2 === 0,
                           "rounded-tl-md": i === 0 && j === 0,
-                          "rounded-bl-md": i === habitsWithEntries.length - 1 && j === 0,
+                          "rounded-bl-md":
+                            i === habitsWithEntries.length - 1 && j === 0,
                           "rounded-tr-md": i === 0 && j === habitBlockCount - 1,
                           "rounded-br-md":
                             i === habitsWithEntries.length - 1 &&

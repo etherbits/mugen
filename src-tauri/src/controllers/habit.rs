@@ -1,4 +1,4 @@
-use rusqlite::{Connection, Error};
+use rusqlite::{types::Null, Connection, Error};
 use std::{str::FromStr, sync::Mutex};
 
 use crate::models::habit::{Habit, HabitEntry, HabitType, HabitWithEntries};
@@ -113,44 +113,11 @@ impl HabitController {
     }
 
     pub fn get_all_habits_with_entries(&self) -> Result<Vec<HabitWithEntries>, Error> {
-        let conn = self.connection.lock().unwrap();
-
-        let mut stmt = conn.prepare(
-            "SELECT * FROM habits INNER JOIN habit_entries ON habit_entries.habit_id = habits.id;",
-        )?;
-
-        let habit_with_entries_iter = stmt.query_map([], |row| {
-            let type_str: String = row.get("type")?;
-            let habit_type = match HabitType::from_str(type_str.as_str()) {
-                Ok(habit_type) => habit_type,
-                Err(_) => {
-                    println!("Error while parsing habit type");
-                    return Err(Error::InvalidQuery);
-                }
-            };
-
-            Ok(HabitWithEntries {
-                habit: Habit {
-                    id: row.get("id")?,
-                    name: row.get("name")?,
-                    habit_type,
-                    target: row.get("target")?,
-                    is_positive: row.get("is_positive")?,
-                    is_archived: row.get("is_archived")?,
-                    creation_timestamp: row.get("creation_timestamp")?,
-                },
-                entries: vec![HabitEntry {
-                    id: row.get("id")?,
-                    habit_id: row.get("habit_id")?,
-                    value: row.get("value")?,
-                    creation_timestamp: row.get("creation_timestamp")?,
-                }],
-            })
-        })?;
-
         let mut habits_with_entries = Vec::new();
-        for habit_with_entries in habit_with_entries_iter {
-            habits_with_entries.push(habit_with_entries?);
+        let habits = self.get_all_habits()?;
+        for habit in habits {
+            let entries = self.get_all_habit_entries(habit.id)?;
+            habits_with_entries.push(HabitWithEntries { habit, entries });
         }
 
         Ok(habits_with_entries)
