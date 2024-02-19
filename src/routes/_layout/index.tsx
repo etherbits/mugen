@@ -13,7 +13,6 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 const habitTitleMinWidth = 160;
-const colCount = 16;
 
 function addHabit() {
   invoke("create_habit", { habitName: "Commit To Github" }).then((res) => {
@@ -84,32 +83,34 @@ function Index() {
             })}
             {habits.map((habit, i) => {
               if (habit.is_archived) return null;
-              return <>
-                <h4 key={"habitTitle" + i} className="pr-8 text-left">
-                  {habit.name}
-                  
-                </h4>
-                {Array.from({ length: habitBlockCount }).map((_, j) => (
-                  <Checkbox
-                    key={"habitCheck" + j}
-                    tabIndex={j}
-                    className={cn(
-                      `h-12 w-16 rounded-none border-none bg-background-l
-                      hover:bg-primary-l focus-visible:ring-inset
-                      focus-visible:ring-offset-0
-                      data-[state=checked]:ring-orange-100`,
-                      {
-                        "bg-background-xl": j % 2 === 0,
-                        "rounded-tl-md": i === 0 && j === 0,
-                        "rounded-bl-md": i === colCount - 1 && j === 0,
-                        "rounded-tr-md": i === 0 && j === habitBlockCount - 1,
-                        "rounded-br-md":
-                          i === colCount - 1 && j === habitBlockCount - 1,
-                      },
-                    )}
-                  />
-                ))}
-              </>
+              return (
+                <>
+                  <h4 key={"habitTitle" + i} className="pr-8 text-left">
+                    {habit.name}
+                  </h4>
+                  {Array.from({ length: habitBlockCount }).map((_, j) => (
+                    <Checkbox
+                      key={"habitCheck" + j}
+                      tabIndex={j}
+                      className={cn(
+                        `h-12 w-16 rounded-none border-none bg-background-l
+                        hover:bg-primary-l focus-visible:ring-inset
+                        focus-visible:ring-offset-0
+                        data-[state=checked]:ring-orange-100`,
+                        {
+                          "bg-background-xl": j % 2 === 0,
+                          "rounded-tl-md": i === 0 && j === 0,
+                          "rounded-bl-md": i === habits.length - 1 && j === 0,
+                          "rounded-tr-md": i === 0 && j === habitBlockCount - 1,
+                          "rounded-br-md":
+                            i === habits.length - 1 &&
+                            j === habitBlockCount - 1,
+                        },
+                      )}
+                    />
+                  ))}
+                </>
+              );
             })}
           </section>
         </Card>
