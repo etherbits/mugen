@@ -27,8 +27,10 @@ impl HabitController {
                 id,
                 name: row.get(1)?,
                 habit_type,
-                is_archived: row.get(3)?,
-                created_at: row.get(4)?,
+                target: row.get(3)?,
+                is_positive: row.get(4)?,
+                is_archived: row.get(5)?,
+                creation_timestamp: row.get(6)?,
             })
         })?;
 
