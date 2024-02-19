@@ -10,7 +10,7 @@ CREATE TABLE habits (
 
 CREATE TABLE habit_entries (
 	id INTEGER PRIMARY KEY,
-	data INTEGER,
+	value INTEGER,
 	creation_timestamp TEXT NOT NULL DEFAULT timestamp,
 	habit_id INTEGER NOT NULL,
 	FOREIGN KEY(habit_id) REFERENCES habits(id) ON DELETE CASCADE

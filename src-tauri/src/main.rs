@@ -2,8 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod controllers;
-mod models;
 mod helpers;
+mod models;
 use controllers::habit::HabitController;
 use helpers::db::init_db;
 use tauri::{Manager, State};
@@ -11,7 +11,7 @@ use tauri::{Manager, State};
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn create_habit(habit_name: String, state: State<HabitController>) -> String {
-    let habit = match state.create_habit(&habit_name, models::habit::HabitType::Binary){ 
+    let habit = match state.create_habit(&habit_name, models::habit::HabitType::Binary) {
         Ok(habit) => habit,
         Err(err) => {
             println!("Error while creating habit: {}", err);
@@ -47,6 +47,33 @@ fn get_all_habits(state: State<HabitController>) -> String {
     }
 }
 
+#[tauri::command]
+fn create_habit_entry(habit_id: i64, value: i64, state: State<HabitController>) {
+    match state.create_habit_entry(habit_id, value) {
+        Ok(_) => println!("Habit entry created"),
+        Err(err) => println!("Error while creating habit entry: {}", err),
+    }
+}
+
+#[tauri::command]
+fn get_all_habit_entries(habit_id: i64, state: State<HabitController>) -> String {
+    let habit_entries = match state.get_all_habit_entries(habit_id) {
+        Ok(habit_entries) => habit_entries,
+        Err(err) => {
+            println!("Error while getting habit entries: {}", err);
+            return "Error while getting habit entries".to_string();
+        }
+    };
+
+    match serde_json::to_string(&habit_entries) {
+        Ok(habit_entries_json) => habit_entries_json,
+        Err(err) => {
+            println!("Error while serializing habit entries: {}", err);
+            "Error while serializing habit entries".to_string()
+        }
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -64,7 +91,7 @@ fn main() {
             app.manage(habit_controller);
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![create_habit, get_all_habits])
+        .invoke_handler(tauri::generate_handler![create_habit, get_all_habits, create_habit_entry, get_all_habit_entries])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

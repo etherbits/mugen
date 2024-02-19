@@ -70,7 +70,7 @@ impl HabitController {
         Ok(habits)
     }
 
-    pub fn add_habit_entry(&self, habit_id: i64, value: i64) -> Result<HabitEntry, Error> {
+    pub fn create_habit_entry(&self, habit_id: i64, value: i64) -> Result<HabitEntry, Error> {
         let conn = self.connection.lock().unwrap();
 
         conn.execute(
