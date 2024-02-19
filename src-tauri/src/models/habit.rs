@@ -30,3 +30,10 @@ pub struct HabitEntry {
     pub value: i32,
     pub creation_timestamp: String,
 }
+
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
+pub struct HabitWithEntries {
+    pub habit: Habit,
+    pub entries: Vec<HabitEntry>,
+}

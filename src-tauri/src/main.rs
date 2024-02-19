@@ -74,6 +74,25 @@ fn get_all_habit_entries(habit_id: i64, state: State<HabitController>) -> String
     }
 }
 
+#[tauri::command]
+fn get_all_habits_with_entries(state: State<HabitController>) -> String {
+    let habit_with_entries = match state.get_all_habits_with_entries() {
+        Ok(habit_with_entries) => habit_with_entries,
+        Err(err) => {
+            println!("Error while getting habit with entries: {}", err);
+            return "Error while getting habit with entries".to_string();
+        }
+    };
+
+    match serde_json::to_string(&habit_with_entries) {
+        Ok(habit_with_entries_json) => habit_with_entries_json,
+        Err(err) => {
+            println!("Error while serializing habit with entries: {}", err);
+            "Error while serializing habit with entries".to_string()
+        }
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -91,7 +110,13 @@ fn main() {
             app.manage(habit_controller);
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![create_habit, get_all_habits, create_habit_entry, get_all_habit_entries])
+        .invoke_handler(tauri::generate_handler![
+            create_habit,
+            get_all_habits,
+            create_habit_entry,
+            get_all_habit_entries,
+            get_all_habits_with_entries
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
