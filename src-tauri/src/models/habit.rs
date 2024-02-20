@@ -24,12 +24,30 @@ pub struct Habit {
 
 #[derive(Serialize, Deserialize, TS)]
 #[ts(export)]
+pub struct HabitValues {
+    pub name: String,
+    pub habit_type: HabitType,
+    pub target: i32,
+    pub is_positive: bool,
+    pub is_archived: bool,
+}
+
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct HabitEntry {
     pub id: i64,
     pub habit_id: i64,
     pub value: Option<i32>,
     pub completion_date: String,
     pub creation_timestamp: String,
+}
+
+#[derive(Serialize, Deserialize, TS)]
+#[ts(export)]
+pub struct HabitEntryValues {
+    pub habit_id: i64,
+    pub value: Option<i32>,
+    pub completion_date: String,
 }
 
 #[derive(Serialize, Deserialize, TS)]

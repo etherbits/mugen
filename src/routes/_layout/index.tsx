@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { HabitEntry } from "src-tauri/bindings/HabitEntry";
 import { HabitWithEntries } from "src-tauri/bindings/HabitWithEntries";
+import { toast } from "sonner";
+import { Habit } from "src-tauri/bindings/Habit";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -55,31 +57,15 @@ function Index() {
     };
   }, []);
 
-  function createHabit() {
-    invoke("create_habit", { habitName: "Commit To Github" }).then((res) => {
-      const resData = JSON.parse(res as string);
 
-      updateHabitEntries();
-    });
-  }
-
-  function createHabitEntry(
-    habitId: HabitEntry["habit_id"],
-    value: HabitEntry["value"],
-    completionDate: HabitEntry["completion_date"],
+  async function handleDeleteHabitEntry(
+    habit: Habit,
+    habitEntry: HabitEntry,
   ) {
-    invoke("create_habit_entry", { habitId, value, completionDate }).then(
-      (res) => {
-        console.log(res);
-        updateHabitEntries();
-      },
-    );
-  }
-
-  function deleteHabitEntry(habitEntryId: HabitEntry["id"]) {
-    invoke("delete_habit_entry", { habitEntryId }).then((res) => {
-      console.log(res);
-      updateHabitEntries();
+    toast.promise(deleteHabitEntry(habitEntry), {
+      loading: "Deleting Habit Entry",
+      success: `Entry of ${habit?.name} deleted`,
+      error: (err) => `${err}`,
     });
   }
 
@@ -128,17 +114,9 @@ function Index() {
                         key={"habitCheck" + j}
                         checked={!!currentEntry}
                         tabIndex={j}
-                        onClick={() => {
-                          if (!currentEntry) {
-                            return createHabitEntry(
-                              habit.id,
-                              1,
-                              currDate.toString(),
-                            );
-                          }
-
-                          deleteHabitEntry(currentEntry.id);
-                        }}
+                        onClick={() =>
+                          handleDeleteHabitEntry(habit, currentEntry, currDate)
+                        }
                         className={cn(
                           `h-12 w-16 rounded-none border-none bg-background-l
                           hover:bg-primary-l focus-visible:ring-inset

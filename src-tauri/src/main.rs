@@ -11,6 +11,8 @@ use tauri::{Manager, State};
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn create_habit(habit_name: String, state: State<HabitController>) -> String {
+
+
     let habit = match state.create_habit(&habit_name, models::habit::HabitType::Binary) {
         Ok(habit) => habit,
         Err(err) => {
@@ -61,10 +63,21 @@ fn create_habit_entry(
 }
 
 #[tauri::command]
-fn delete_habit_entry(habit_entry_id: i64, state: State<HabitController>) {
-    match state.delete_habit_entry(habit_entry_id) {
-        Ok(_) => println!("Habit entry deleted"),
-        Err(err) => println!("Error while deleting habit entry: {}", err),
+fn delete_habit_entry(habit_entry_id: i64, state: State<HabitController>) -> String {
+    let habit_entry = match state.delete_habit_entry(habit_entry_id) {
+        Ok(habit_entry) => habit_entry,
+        Err(err) => {
+            println!("Error while deleting habit entry: {}", err);
+            return "Error while deleting habit entry".to_string();
+        }
+    };
+
+    match serde_json::to_string(&habit_entry) {
+        Ok(habit_entry_json) => habit_entry_json,
+        Err(err) => {
+            println!("Error while serializing habit entry: {}", err);
+            "Error while serializing habit entry".to_string()
+        }
     }
 }
 

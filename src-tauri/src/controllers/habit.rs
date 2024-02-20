@@ -97,12 +97,26 @@ impl HabitController {
         Ok(data)
     }
 
-    pub fn delete_habit_entry(&self, habit_entry_id: i64) -> Result<(), Error> {
+    pub fn delete_habit_entry(&self, habit_entry_id: i64) -> Result<HabitEntry, Error> {
         let conn = self.connection.lock().unwrap();
+
+        let habit_entry = conn.query_row(
+            "SELECT * FROM habit_entries WHERE id = $1",
+            [habit_entry_id],
+            |row| {
+                Ok(HabitEntry {
+                    id: row.get("id")?,
+                    habit_id: row.get("habit_id")?,
+                    value: row.get("value")?,
+                    completion_date: row.get("completion_date")?,
+                    creation_timestamp: row.get("creation_timestamp")?,
+                })
+            },
+        )?;
 
         conn.execute("DELETE FROM habit_entries WHERE id = $1", [habit_entry_id])?;
 
-        Ok(())
+        Ok(habit_entry)
     }
 
     pub fn get_all_habit_entries(&self, habit_id: i64) -> Result<Vec<HabitEntry>, Error> {
