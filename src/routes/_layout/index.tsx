@@ -93,7 +93,8 @@ function Index() {
             <Button
               className="my-auto mb-3 mr-8"
               onClick={() =>
-                createHabit({ // defualts values for now
+                createHabit({
+                  // defualts values for now
                   name: "Commit To Github",
                   habit_type: "Binary",
                   target: 1,

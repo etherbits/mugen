@@ -7,7 +7,9 @@ export type HabitValues = Omit<Habit, DefaultValueOmits>;
 export type HabitEntryValues = Omit<HabitEntry, DefaultValueOmits>;
 
 export async function createHabit(habitValues: HabitValues) {
-  return invoke("create_habit", {serializedHabitValues: JSON.stringify(habitValues)});
+  return invoke("create_habit", {
+    serializedHabitValues: JSON.stringify(habitValues),
+  });
 }
 
 export async function createHabitEntry(habitEntryValues: HabitEntryValues) {
