@@ -61,6 +61,14 @@ fn create_habit_entry(
 }
 
 #[tauri::command]
+fn delete_habit_entry(habit_entry_id: i64, state: State<HabitController>) {
+    match state.delete_habit_entry(habit_entry_id) {
+        Ok(_) => println!("Habit entry deleted"),
+        Err(err) => println!("Error while deleting habit entry: {}", err),
+    }
+}
+
+#[tauri::command]
 fn get_all_habit_entries(habit_id: i64, state: State<HabitController>) -> String {
     let habit_entries = match state.get_all_habit_entries(habit_id) {
         Ok(habit_entries) => habit_entries,
@@ -120,7 +128,8 @@ fn main() {
             get_all_habits,
             create_habit_entry,
             get_all_habit_entries,
-            get_all_habits_with_entries
+            get_all_habits_with_entries,
+            delete_habit_entry
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -76,8 +76,8 @@ function Index() {
     );
   }
 
-  function deleteHabitEntry(entryId: HabitEntry["id"]) {
-    invoke("delete_habit_entry", { entryId }).then((res) => {
+  function deleteHabitEntry(habitEntryId: HabitEntry["id"]) {
+    invoke("delete_habit_entry", { habitEntryId }).then((res) => {
       console.log(res);
       updateHabitEntries();
     });
@@ -111,10 +111,6 @@ function Index() {
             {habitsWithEntries.map(({ habit, entries }, i) => {
               if (habit.is_archived) return null;
 
-              const entryDates = entries.map((entry) =>
-                Temporal.PlainDateTime.from(entry.completion_date),
-              );
-
               return (
                 <>
                   <h4 key={"habitTitle" + i} className="pr-8 text-left">
@@ -125,6 +121,7 @@ function Index() {
                     const currentEntry = entries.find(
                       (entry) => entry.completion_date === currDate.toString(),
                     );
+                    console.log(currentEntry);
 
                     return (
                       <Checkbox

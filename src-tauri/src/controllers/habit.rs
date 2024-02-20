@@ -97,6 +97,14 @@ impl HabitController {
         Ok(data)
     }
 
+    pub fn delete_habit_entry(&self, habit_entry_id: i64) -> Result<(), Error> {
+        let conn = self.connection.lock().unwrap();
+
+        conn.execute("DELETE FROM habit_entries WHERE id = $1", [habit_entry_id])?;
+
+        Ok(())
+    }
+
     pub fn get_all_habit_entries(&self, habit_id: i64) -> Result<Vec<HabitEntry>, Error> {
         let conn = self.connection.lock().unwrap();
 
