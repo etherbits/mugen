@@ -6,14 +6,21 @@ mod helpers;
 mod models;
 use controllers::habit::HabitController;
 use helpers::db::init_db;
+use models::habit::HabitValues;
 use tauri::{Manager, State};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn create_habit(habit_name: String, state: State<HabitController>) -> String {
+fn create_habit(serialized_habit_values: String, state: State<HabitController>) -> String {
+    let habit_values: HabitValues = match serde_json::from_str(&serialized_habit_values) {
+        Ok(habit_values) => habit_values,
+        Err(err) => {
+            println!("Error while deserializing habit values: {}", err);
+            return "Error while deserializing habit values".to_string();
+        }
+    };
 
-
-    let habit = match state.create_habit(&habit_name, models::habit::HabitType::Binary) {
+    let habit = match state.create_habit(&habit_values) {
         Ok(habit) => habit,
         Err(err) => {
             println!("Error while creating habit: {}", err);

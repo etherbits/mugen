@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 use ts_rs::TS;
 
-#[derive(Display, EnumString, Serialize, Deserialize, TS)]
+#[derive(Copy, Clone, Display, EnumString, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub enum HabitType {
     Binary,

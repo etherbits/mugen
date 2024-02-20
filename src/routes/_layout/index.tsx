@@ -10,6 +10,12 @@ import { HabitEntry } from "src-tauri/bindings/HabitEntry";
 import { HabitWithEntries } from "src-tauri/bindings/HabitWithEntries";
 import { toast } from "sonner";
 import { Habit } from "src-tauri/bindings/Habit";
+import {
+  deleteHabitEntry,
+  createHabit,
+  createHabitEntry,
+  HabitEntryValues,
+} from "@/lib/tauri";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -57,11 +63,15 @@ function Index() {
     };
   }, []);
 
+  async function handleCreateHabitEntry(habit: HabitEntryValues) {
+    toast.promise(createHabitEntry(habit), {
+      loading: "Creating Habit Entry",
+      success: `Entry of ${habit} created`,
+      error: (err) => `${err}`,
+    });
+  }
 
-  async function handleDeleteHabitEntry(
-    habit: Habit,
-    habitEntry: HabitEntry,
-  ) {
+  async function handleDeleteHabitEntry(habit: Habit, habitEntry: HabitEntry) {
     toast.promise(deleteHabitEntry(habitEntry), {
       loading: "Deleting Habit Entry",
       success: `Entry of ${habit?.name} deleted`,
@@ -80,7 +90,18 @@ function Index() {
               gridTemplateColumns: `${habitTitleWidth}px repeat(auto-fill, 64px)`,
             }}
           >
-            <Button className="my-auto mb-3 mr-8" onClick={createHabit}>
+            <Button
+              className="my-auto mb-3 mr-8"
+              onClick={() =>
+                createHabit({ // defualts values for now
+                  name: "Commit To Github",
+                  habit_type: "Binary",
+                  target: 1,
+                  is_positive: true,
+                  is_archived: false,
+                })
+              }
+            >
               Add Habit
             </Button>
             {Array.from({ length: habitBlockCount }).map((_, i) => {
@@ -114,9 +135,16 @@ function Index() {
                         key={"habitCheck" + j}
                         checked={!!currentEntry}
                         tabIndex={j}
-                        onClick={() =>
-                          handleDeleteHabitEntry(habit, currentEntry, currDate)
-                        }
+                        onClick={() => {
+                          if (!currentEntry) {
+                            return handleCreateHabitEntry({
+                              habit_id: habit.id,
+                              value: 1,
+                              completion_date: currDate.toString(),
+                            });
+                          }
+                          handleDeleteHabitEntry(habit, currentEntry);
+                        }}
                         className={cn(
                           `h-12 w-16 rounded-none border-none bg-background-l
                           hover:bg-primary-l focus-visible:ring-inset

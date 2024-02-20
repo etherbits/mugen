@@ -8,15 +8,7 @@ export type HabitValues = Omit<Habit, DefaultValueOmits>;
 export type HabitEntryValues = Omit<HabitEntry, DefaultValueOmits>;
 
 export async function createHabit(habitValues: HabitValues) {
-  const { name, habit_type, target, is_positive, is_archived  } = habitValues;
-
-  return invoke("create_habit", {
-    name,
-    habitType: habit_type,
-    target,
-    isPositive: is_positive,
-    isArchived: is_archived,
-  })
+  return invoke("create_habit", {serializedHabitValues: JSON.stringify(habitValues)});
 }
 
 export async function createHabitEntry(habitEntryValues: HabitEntryValues) {
