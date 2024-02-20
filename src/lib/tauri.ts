@@ -1,7 +1,6 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { Habit } from "src-tauri/bindings/Habit";
 import { HabitEntry } from "src-tauri/bindings/HabitEntry";
-import { HabitType } from "src-tauri/bindings/HabitType";
 
 export type DefaultValueOmits = "id" | "creation_timestamp";
 export type HabitValues = Omit<Habit, DefaultValueOmits>;
@@ -19,7 +18,7 @@ export async function createHabitEntry(habitEntryValues: HabitEntryValues) {
   });
 }
 
-export function deleteHabitEntry(habitEntry: HabitEntry) {
+export async function deleteHabitEntry(habitEntry: HabitEntry) {
   return invoke("delete_habit_entry", {
     habitEntryId: habitEntry.id,
   });
