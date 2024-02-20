@@ -48,7 +48,12 @@ fn get_all_habits(state: State<HabitController>) -> String {
 }
 
 #[tauri::command]
-fn create_habit_entry(habit_id: i64, value: i64, completion_date: String, state: State<HabitController>) {
+fn create_habit_entry(
+    habit_id: i64,
+    value: i64,
+    completion_date: String,
+    state: State<HabitController>,
+) {
     match state.create_habit_entry(habit_id, value, completion_date) {
         Ok(_) => println!("Habit entry created"),
         Err(err) => println!("Error while creating habit entry: {}", err),

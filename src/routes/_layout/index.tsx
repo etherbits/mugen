@@ -76,6 +76,13 @@ function Index() {
     );
   }
 
+  function deleteHabitEntry(entryId: HabitEntry["id"]) {
+    invoke("delete_habit_entry", { entryId }).then((res) => {
+      console.log(res);
+      updateHabitEntries();
+    });
+  }
+
   return (
     <div>
       <main className="py-8">
@@ -115,16 +122,22 @@ function Index() {
                   </h4>
                   {Array.from({ length: habitBlockCount }).map((_, j) => {
                     const currDate = date.subtract({ days: j });
+                    const isCompleted = entryDates.some((entryDate) =>
+                      entryDate.equals(currDate),
+                    );
+
                     return (
                       <Checkbox
                         key={"habitCheck" + j}
-                        checked={entryDates.some((entryDate) =>
-                          entryDate.equals(currDate),
-                        )}
+                        checked={isCompleted}
                         tabIndex={j}
-                        onClick={() =>
-                          createHabitEntry(habit.id, 1, currDate.toString())
-                        }
+                        onClick={() => {
+                          if (!isCompleted) {
+                            return createHabitEntry(habit.id, 1, currDate.toString());
+                          }
+
+
+                        }}
                         className={cn(
                           `h-12 w-16 rounded-none border-none bg-background-l
                           hover:bg-primary-l focus-visible:ring-inset
