@@ -122,21 +122,25 @@ function Index() {
                   </h4>
                   {Array.from({ length: habitBlockCount }).map((_, j) => {
                     const currDate = date.subtract({ days: j });
-                    const isCompleted = entryDates.some((entryDate) =>
-                      entryDate.equals(currDate),
+                    const currentEntry = entries.find(
+                      (entry) => entry.completion_date === currDate.toString(),
                     );
 
                     return (
                       <Checkbox
                         key={"habitCheck" + j}
-                        checked={isCompleted}
+                        checked={!!currentEntry}
                         tabIndex={j}
                         onClick={() => {
-                          if (!isCompleted) {
-                            return createHabitEntry(habit.id, 1, currDate.toString());
+                          if (!currentEntry) {
+                            return createHabitEntry(
+                              habit.id,
+                              1,
+                              currDate.toString(),
+                            );
                           }
 
-
+                          deleteHabitEntry(currentEntry.id);
                         }}
                         className={cn(
                           `h-12 w-16 rounded-none border-none bg-background-l
