@@ -11,7 +11,8 @@ pub struct DB {
 }
 
 pub fn create_db_tables(connection: &Connection) {
-    let create_db_query = match read_to_string("db_queries/create_db_query.sql") {
+    let create_db_query = match read_to_string("db_queries/create_db_query.sql")
+    {
         Ok(query) => query,
         Err(_) => {
             println!("Error while reading create_db_query.sql");
@@ -26,7 +27,8 @@ pub fn create_db_tables(connection: &Connection) {
 }
 
 pub fn delete_db_tables(connection: &Connection) {
-    let delete_db_query = match read_to_string("db_queries/delete_db_query.sql") {
+    let delete_db_query = match read_to_string("db_queries/delete_db_query.sql")
+    {
         Ok(query) => query,
         Err(_) => {
             println!("Error while reading delete_db_query.sql");

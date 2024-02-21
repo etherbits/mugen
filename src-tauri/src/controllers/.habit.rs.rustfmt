@@ -2,8 +2,7 @@ use rusqlite::{params, Connection, Error};
 use std::{str::FromStr, sync::Mutex};
 
 use crate::models::habit::{
-    Habit, HabitEntry, HabitEntryValues, HabitType, HabitValues,
-    HabitWithEntries,
+    Habit, HabitEntry, HabitEntryValues, HabitType, HabitValues, HabitWithEntries,
 };
 
 pub struct HabitController {
@@ -15,10 +14,7 @@ impl HabitController {
         Self { connection }
     }
 
-    pub fn create_habit(
-        &self,
-        habit_values: &HabitValues,
-    ) -> Result<Habit, Error> {
+    pub fn create_habit(&self, habit_values: &HabitValues) -> Result<Habit, Error> {
         let conn = self.connection.lock().unwrap();
 
         conn.execute(
@@ -36,21 +32,17 @@ impl HabitController {
 
         let id = conn.last_insert_rowid();
 
-        let data = conn.query_row(
-            "SELECT * FROM habits WHERE id = $1",
-            [id],
-            |row| {
-                Ok(Habit {
-                    id,
-                    name: row.get("name")?,
-                    habit_type: habit_values.habit_type,
-                    target: row.get("target")?,
-                    is_positive: row.get("is_positive")?,
-                    is_archived: row.get("is_archived")?,
-                    creation_timestamp: row.get("creation_timestamp")?,
-                })
-            },
-        )?;
+        let data = conn.query_row("SELECT * FROM habits WHERE id = $1", [id], |row| {
+            Ok(Habit {
+                id,
+                name: row.get("name")?,
+                habit_type: habit_values.habit_type,
+                target: row.get("target")?,
+                is_positive: row.get("is_positive")?,
+                is_archived: row.get("is_archived")?,
+                creation_timestamp: row.get("creation_timestamp")?,
+            })
+        })?;
 
         Ok(data)
     }
@@ -95,8 +87,7 @@ impl HabitController {
         let conn = self.connection.lock().unwrap();
 
         conn.execute(
-            "INSERT INTO habit_entries (habit_id, value, completion_date)
-            VALUES (?1, COALESCE(?2, 0), ?3)",
+            "INSERT INTO habit_entries (habit_id, value, completion_date) VALUES (?1, ?2, ?3)",
             params![
                 &habit_entry_values.habit_id,
                 &habit_entry_values.value,
@@ -105,27 +96,20 @@ impl HabitController {
         )?;
 
         let id = conn.last_insert_rowid();
-        let data = conn.query_row(
-            "SELECT * FROM habit_entries WHERE id = $1",
-            [id],
-            |row| {
-                Ok(HabitEntry {
-                    id,
-                    habit_id: row.get("habit_id")?,
-                    value: row.get("value")?,
-                    completion_date: row.get("completion_date")?,
-                    creation_timestamp: row.get("creation_timestamp")?,
-                })
-            },
-        )?;
+        let data = conn.query_row("SELECT * FROM habit_entries WHERE id = $1", [id], |row| {
+            Ok(HabitEntry {
+                id,
+                habit_id: row.get("habit_id")?,
+                value: row.get("value")?,
+                completion_date: row.get("completion_date")?,
+                creation_timestamp: row.get("creation_timestamp")?,
+            })
+        })?;
 
         Ok(data)
     }
 
-    pub fn delete_habit_entry(
-        &self,
-        habit_entry_id: i64,
-    ) -> Result<HabitEntry, Error> {
+    pub fn delete_habit_entry(&self, habit_entry_id: i64) -> Result<HabitEntry, Error> {
         let conn = self.connection.lock().unwrap();
 
         let habit_entry = conn.query_row(
@@ -142,22 +126,15 @@ impl HabitController {
             },
         )?;
 
-        conn.execute(
-            "DELETE FROM habit_entries WHERE id = $1",
-            [habit_entry_id],
-        )?;
+        conn.execute("DELETE FROM habit_entries WHERE id = $1", [habit_entry_id])?;
 
         Ok(habit_entry)
     }
 
-    pub fn get_all_habit_entries(
-        &self,
-        habit_id: i64,
-    ) -> Result<Vec<HabitEntry>, Error> {
+    pub fn get_all_habit_entries(&self, habit_id: i64) -> Result<Vec<HabitEntry>, Error> {
         let conn = self.connection.lock().unwrap();
 
-        let mut stmt =
-            conn.prepare("SELECT * FROM habit_entries WHERE habit_id = $1")?;
+        let mut stmt = conn.prepare("SELECT * FROM habit_entries WHERE habit_id = $1")?;
         let habit_entry_iter = stmt.query_map([habit_id], |row| {
             Ok(HabitEntry {
                 id: row.get("id")?,
@@ -176,9 +153,7 @@ impl HabitController {
         Ok(habit_entries)
     }
 
-    pub fn get_all_habits_with_entries(
-        &self,
-    ) -> Result<Vec<HabitWithEntries>, Error> {
+    pub fn get_all_habits_with_entries(&self) -> Result<Vec<HabitWithEntries>, Error> {
         let mut habits_with_entries = Vec::new();
         let habits = self.get_all_habits()?;
         for habit in habits {

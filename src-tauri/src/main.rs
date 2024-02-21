@@ -9,19 +9,21 @@ use helpers::db::init_db;
 use models::habit::HabitValues;
 use tauri::{Manager, State};
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn create_habit(
     serialized_habit_values: String,
     state: State<HabitController>,
 ) -> Result<String, String> {
-    let habit_values: HabitValues = match serde_json::from_str(&serialized_habit_values) {
-        Ok(habit_values) => habit_values,
-        Err(err) => {
-            println!("Error while deserializing habit values: {}", err);
-            return Err("Error while deserializing habit values".to_string());
-        }
-    };
+    let habit_values: HabitValues =
+        match serde_json::from_str(&serialized_habit_values) {
+            Ok(habit_values) => habit_values,
+            Err(err) => {
+                println!("Error while deserializing habit values: {}", err);
+                return Err(
+                    "Error while deserializing habit values".to_string()
+                );
+            }
+        };
 
     let habit = match state.create_habit(&habit_values) {
         Ok(habit) => habit,
@@ -49,8 +51,13 @@ fn create_habit_entry(
         match serde_json::from_str(&serialized_habit_entry_values) {
             Ok(habit_entry_values) => habit_entry_values,
             Err(err) => {
-                println!("Error while deserializing habit entry values: {}", err);
-                return Err("Error while deserializing habit entry values".to_string());
+                println!(
+                    "Error while deserializing habit entry values: {}",
+                    err
+                );
+                return Err(
+                    "Error while deserializing habit entry values".to_string()
+                );
             }
         };
 
@@ -94,7 +101,9 @@ fn delete_habit_entry(
 }
 
 #[tauri::command]
-fn get_all_habits_with_entries(state: State<HabitController>) -> Result<String, String> {
+fn get_all_habits_with_entries(
+    state: State<HabitController>,
+) -> Result<String, String> {
     let habit_with_entries = match state.get_all_habits_with_entries() {
         Ok(habit_with_entries) => habit_with_entries,
         Err(err) => {
