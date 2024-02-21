@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { createFileRoute } from "@tanstack/react-router";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Habit } from "src-tauri/bindings/Habit";

@@ -1,7 +1,9 @@
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { HabitEntry } from "src-tauri/bindings/HabitEntry";
 import { HabitEntryValues } from "src-tauri/bindings/HabitEntryValues";
 import { HabitValues } from "src-tauri/bindings/HabitValues";
+
+export type { HabitEntry, HabitEntryValues, HabitValues };
 
 export async function createHabit(habitValues: HabitValues) {
   return invoke("create_habit", {
