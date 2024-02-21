@@ -41,6 +41,37 @@ fn create_habit(
 }
 
 #[tauri::command]
+fn create_habit_entry(
+    serialized_habit_entry_values: String,
+    state: State<HabitController>,
+) -> Result<String, String> {
+    let habit_entry_values: models::habit::HabitEntryValues =
+        match serde_json::from_str(&serialized_habit_entry_values) {
+            Ok(habit_entry_values) => habit_entry_values,
+            Err(err) => {
+                println!("Error while deserializing habit entry values: {}", err);
+                return Err("Error while deserializing habit entry values".to_string());
+            }
+        };
+
+    let habit_entry = match state.create_habit_entry(&habit_entry_values) {
+        Ok(habit_entry) => habit_entry,
+        Err(err) => {
+            println!("Error while creating habit entry: {}", err);
+            return Err("Error while creating habit entry".to_string());
+        }
+    };
+
+    match serde_json::to_string(&habit_entry) {
+        Ok(habit_entry_json) => Ok(habit_entry_json),
+        Err(err) => {
+            println!("Error while serializing habit entry: {}", err);
+            Err("Error while serializing habit entry".to_string())
+        }
+    }
+}
+
+#[tauri::command]
 fn delete_habit_entry(
     habit_entry_id: i64,
     state: State<HabitController>,
@@ -100,8 +131,9 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             create_habit,
-            get_all_habits_with_entries,
-            delete_habit_entry
+            create_habit_entry,
+            delete_habit_entry,
+            get_all_habits_with_entries
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
