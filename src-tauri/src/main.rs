@@ -11,12 +11,15 @@ use tauri::{Manager, State};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn create_habit(serialized_habit_values: String, state: State<HabitController>) -> String {
+fn create_habit(
+    serialized_habit_values: String,
+    state: State<HabitController>,
+) -> Result<String, String> {
     let habit_values: HabitValues = match serde_json::from_str(&serialized_habit_values) {
         Ok(habit_values) => habit_values,
         Err(err) => {
             println!("Error while deserializing habit values: {}", err);
-            return "Error while deserializing habit values".to_string();
+            return Err("Error while deserializing habit values".to_string());
         }
     };
 
@@ -24,104 +27,56 @@ fn create_habit(serialized_habit_values: String, state: State<HabitController>) 
         Ok(habit) => habit,
         Err(err) => {
             println!("Error while creating habit: {}", err);
-            return "Error while creating habit".to_string();
+            return Err("Error while creating habit".to_string());
         }
     };
 
     match serde_json::to_string(&habit) {
-        Ok(habit_json) => habit_json,
+        Ok(habit_json) => Ok(habit_json),
         Err(err) => {
             println!("Error while serializing habit: {}", err);
-            "Error while serializing habit".to_string()
+            Err("Error while serializing habit".to_string())
         }
     }
 }
 
 #[tauri::command]
-fn get_all_habits(state: State<HabitController>) -> String {
-    let habits = match state.get_all_habits() {
-        Ok(habits) => habits,
-        Err(err) => {
-            println!("Error while getting habits: {}", err);
-            return "Error while getting habits".to_string();
-        }
-    };
-
-    match serde_json::to_string(&habits) {
-        Ok(habits_json) => habits_json,
-        Err(err) => {
-            println!("Error while serializing habits: {}", err);
-            "Error while serializing habits".to_string()
-        }
-    }
-}
-
-#[tauri::command]
-fn create_habit_entry(
-    habit_id: i64,
-    value: i64,
-    completion_date: String,
+fn delete_habit_entry(
+    habit_entry_id: i64,
     state: State<HabitController>,
-) {
-    match state.create_habit_entry(habit_id, value, completion_date) {
-        Ok(_) => println!("Habit entry created"),
-        Err(err) => println!("Error while creating habit entry: {}", err),
-    }
-}
-
-#[tauri::command]
-fn delete_habit_entry(habit_entry_id: i64, state: State<HabitController>) -> String {
+) -> Result<String, String> {
     let habit_entry = match state.delete_habit_entry(habit_entry_id) {
         Ok(habit_entry) => habit_entry,
         Err(err) => {
             println!("Error while deleting habit entry: {}", err);
-            return "Error while deleting habit entry".to_string();
+            return Err("Error while deleting habit entry".to_string());
         }
     };
 
     match serde_json::to_string(&habit_entry) {
-        Ok(habit_entry_json) => habit_entry_json,
+        Ok(habit_entry_json) => Ok(habit_entry_json),
         Err(err) => {
             println!("Error while serializing habit entry: {}", err);
-            "Error while serializing habit entry".to_string()
+            Err("Error while serializing habit entry".to_string())
         }
     }
 }
 
 #[tauri::command]
-fn get_all_habit_entries(habit_id: i64, state: State<HabitController>) -> String {
-    let habit_entries = match state.get_all_habit_entries(habit_id) {
-        Ok(habit_entries) => habit_entries,
-        Err(err) => {
-            println!("Error while getting habit entries: {}", err);
-            return "Error while getting habit entries".to_string();
-        }
-    };
-
-    match serde_json::to_string(&habit_entries) {
-        Ok(habit_entries_json) => habit_entries_json,
-        Err(err) => {
-            println!("Error while serializing habit entries: {}", err);
-            "Error while serializing habit entries".to_string()
-        }
-    }
-}
-
-#[tauri::command]
-fn get_all_habits_with_entries(state: State<HabitController>) -> String {
+fn get_all_habits_with_entries(state: State<HabitController>) -> Result<String, String> {
     let habit_with_entries = match state.get_all_habits_with_entries() {
         Ok(habit_with_entries) => habit_with_entries,
         Err(err) => {
             println!("Error while getting habit with entries: {}", err);
-            return "Error while getting habit with entries".to_string();
+            return Err("Error while getting habit with entries".to_string());
         }
     };
 
     match serde_json::to_string(&habit_with_entries) {
-        Ok(habit_with_entries_json) => habit_with_entries_json,
+        Ok(habit_with_entries_json) => Ok(habit_with_entries_json),
         Err(err) => {
             println!("Error while serializing habit with entries: {}", err);
-            "Error while serializing habit with entries".to_string()
+            Err("Error while serializing habit with entries".to_string())
         }
     }
 }
@@ -145,9 +100,6 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             create_habit,
-            get_all_habits,
-            create_habit_entry,
-            get_all_habit_entries,
             get_all_habits_with_entries,
             delete_habit_entry
         ])
