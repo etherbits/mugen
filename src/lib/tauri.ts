@@ -10,10 +10,8 @@ export async function createHabit(habitValues: HabitValues) {
 }
 
 export async function createHabitEntry(habitEntryValues: HabitEntryValues) {
-  invoke("create_habit_entry", {
-    habitId: habitEntryValues.habit_id,
-    value: habitEntryValues.value,
-    completionDate: habitEntryValues.completion_date,
+  return invoke("create_habit_entry", {
+    serializedHabitEntryValues: JSON.stringify(habitEntryValues),
   });
 }
 

@@ -75,18 +75,27 @@ function Index() {
     });
   }
 
-  function handleCreateHabitEntry(habitEntryValues: HabitEntryValues) {
+  function handleCreateHabitEntry(
+    habitEntryValues: HabitEntryValues,
+    habit: Habit,
+  ) {
     toast.promise(createHabitEntry(habitEntryValues), {
       loading: "Creating Habit Entry",
-      success: `New entry of created`,
+      success: () => {
+        updateHabitEntries();
+        return `New entry of ${habit.name} created`;
+      },
       error: (err) => `${err}`,
     });
   }
 
-  function handleDeleteHabitEntry(habit: Habit, habitEntry: HabitEntry) {
+  function handleDeleteHabitEntry(habitEntry: HabitEntry, habit: Habit) {
     toast.promise(deleteHabitEntry(habitEntry), {
       loading: "Deleting Habit Entry",
-      success: `Entry of ${habit?.name} deleted`,
+      success: () => {
+        updateHabitEntries();
+        return `Entry of ${habit?.name} deleted`;
+      },
       error: (err) => `${err}`,
     });
   }
@@ -143,13 +152,16 @@ function Index() {
                         tabIndex={j}
                         onClick={() => {
                           if (!currentEntry) {
-                            return handleCreateHabitEntry({
-                              habit_id: habit.id,
-                              value: 1,
-                              completion_date: currDate.toString(),
-                            });
+                            return handleCreateHabitEntry(
+                              {
+                                habit_id: habit.id,
+                                value: 1,
+                                completion_date: currDate.toString(),
+                              },
+                              habit,
+                            );
                           }
-                          handleDeleteHabitEntry(habit, currentEntry);
+                          handleDeleteHabitEntry(currentEntry, habit);
                         }}
                         className={cn(
                           `h-12 w-16 rounded-none border-none bg-background-l
