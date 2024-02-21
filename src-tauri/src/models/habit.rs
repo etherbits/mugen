@@ -27,9 +27,9 @@ pub struct Habit {
 pub struct HabitValues {
     pub name: String,
     pub habit_type: HabitType,
-    pub target: i32,
-    pub is_positive: bool,
-    pub is_archived: bool,
+    pub target: Option<i32>,
+    pub is_positive: Option<bool>,
+    pub is_archived: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, TS)]

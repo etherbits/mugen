@@ -1,10 +1,7 @@
 import { invoke } from "@tauri-apps/api/tauri";
-import { Habit } from "src-tauri/bindings/Habit";
 import { HabitEntry } from "src-tauri/bindings/HabitEntry";
-
-export type DefaultValueOmits = "id" | "creation_timestamp";
-export type HabitValues = Omit<Habit, DefaultValueOmits>;
-export type HabitEntryValues = Omit<HabitEntry, DefaultValueOmits>;
+import { HabitEntryValues } from "src-tauri/bindings/HabitEntryValues";
+import { HabitValues } from "src-tauri/bindings/HabitValues";
 
 export async function createHabit(habitValues: HabitValues) {
   return invoke("create_habit", {

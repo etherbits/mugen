@@ -20,7 +20,6 @@ impl HabitController {
             params![habit_values.name, habit_values.habit_type.to_string(), habit_values.target, habit_values.is_positive, habit_values.is_archived]
         )?;
 
-
         let id = conn.last_insert_rowid();
 
         let data = conn.query_row("SELECT * FROM habits WHERE id = $1", [id], |row| {

@@ -1,21 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  HabitEntryValues,
+  HabitValues,
+  createHabit,
+  createHabitEntry,
+  deleteHabitEntry,
+} from "@/lib/tauri";
 import { cn } from "@/lib/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { HabitEntry } from "src-tauri/bindings/HabitEntry";
-import { HabitWithEntries } from "src-tauri/bindings/HabitWithEntries";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Habit } from "src-tauri/bindings/Habit";
-import {
-  deleteHabitEntry,
-  createHabit,
-  createHabitEntry,
-  HabitEntryValues,
-} from "@/lib/tauri";
+import { HabitEntry } from "src-tauri/bindings/HabitEntry";
+import { HabitWithEntries } from "src-tauri/bindings/HabitWithEntries";
 
 export const Route = createFileRoute("/_layout/")({
   component: Index,
@@ -63,15 +64,26 @@ function Index() {
     };
   }, []);
 
-  async function handleCreateHabitEntry(habit: HabitEntryValues) {
-    toast.promise(createHabitEntry(habit), {
-      loading: "Creating Habit Entry",
-      success: `Entry of ${habit} created`,
+  function handleCreateHabit(habitValues: HabitValues) {
+    toast.promise(createHabit(habitValues), {
+      loading: "Creating Habit",
+      success: () => {
+        updateHabitEntries();
+        return `Habit ${habitValues.name} created`;
+      },
       error: (err) => `${err}`,
     });
   }
 
-  async function handleDeleteHabitEntry(habit: Habit, habitEntry: HabitEntry) {
+  function handleCreateHabitEntry(habitEntryValues: HabitEntryValues) {
+    toast.promise(createHabitEntry(habitEntryValues), {
+      loading: "Creating Habit Entry",
+      success: `New entry of created`,
+      error: (err) => `${err}`,
+    });
+  }
+
+  function handleDeleteHabitEntry(habit: Habit, habitEntry: HabitEntry) {
     toast.promise(deleteHabitEntry(habitEntry), {
       loading: "Deleting Habit Entry",
       success: `Entry of ${habit?.name} deleted`,
@@ -93,14 +105,7 @@ function Index() {
             <Button
               className="my-auto mb-3 mr-8"
               onClick={() =>
-                createHabit({
-                  // defualts values for now
-                  name: "Commit To Github",
-                  habit_type: "Binary",
-                  target: 1,
-                  is_positive: true,
-                  is_archived: false,
-                })
+                handleCreateHabit({ name: "New Habit", habit_type: "Binary" })
               }
             >
               Add Habit
